@@ -17,6 +17,7 @@ module.exports = { // CRUD Operations:
   async getUsers (req, res) { // get all users
     try {
       const users = await User.find()
+        // .populate('thoughts')
         .populate('friends', '_id username email');
 
       return res.json(users);
@@ -29,6 +30,7 @@ module.exports = { // CRUD Operations:
   async getUser (req, res) { // get single user by _id
     try {
       const user = await User.findById(req.params.userId)
+        // .populate('thoughts')
         .populate('friends', 'username');
 
       return res.json(user);
@@ -42,9 +44,14 @@ module.exports = { // CRUD Operations:
     try {
       const updatedUser = await User.findOneAndUpdate(
         { _id: ObjectId(req.params.userId)},
-        { $addToSet: { friends: ObjectId(req.body)}},
+        { $addToSet: {
+            friends: ObjectId(req.body)
+          }
+        },
         { new: true }
-      ).populate('friends', 'username');
+      ).populate('friends', 'username')
+      //  .populate('thoughts')
+      ;
 
       return res.json(updatedUser);
     } catch (err) {
@@ -59,7 +66,9 @@ module.exports = { // CRUD Operations:
         { _id: ObjectId(req.params.userId)},
         { $addToSet: { friends: ObjectId(req.params.friendId)}},
         { new: true }
-      ).populate('friends', 'username');
+      ).populate('friends', 'username')
+      //  .populate('thoughts')
+      ;
 
       return res.json(updatedUser);
     } catch (err) {
