@@ -41,13 +41,11 @@ module.exports = { // CRUD Operations:
   },
   
   async updateUser (req, res) { // add user to user.friends by _id
+    // Expect -> req.body: {'username': <string>, 'email': <string>}
     try {
       const updatedUser = await User.findOneAndUpdate(
         { _id: ObjectId(req.params.userId)},
-        { $addToSet: {
-            friends: ObjectId(req.body)
-          }
-        },
+        { username: req.body.username, email: req.body.email},
         { new: true }
       ).populate('friends', 'username')
       //  .populate('thoughts')
