@@ -22,14 +22,14 @@ const userSchema = new Schema(
   }
 );
 
-// Model Test:
-const testUsers = [
-  {username: 'A1', email: 'A2',},
-  {username: 'B1', email: 'B2',},
-  {username: 'C1', email: 'C2',},
-  {username: 'D1', email: 'D2',},
-  {username: 'E1', email: 'E2',}
-]
+// // Model Test:
+// const testUsers = [
+//   {username: 'A1', email: 'A2',},
+//   {username: 'B1', email: 'B2',},
+//   {username: 'C1', email: 'C2',},
+//   {username: 'D1', email: 'D2',},
+//   {username: 'E1', email: 'E2',}
+// ]
 
 // connection.on('error', (err) => err);
 
