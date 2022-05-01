@@ -22,38 +22,34 @@ const userSchema = new Schema(
   }
 );
 
-// test model:
+// Model Test:
 const testUsers = [
-  {
-    username: 'A1',
-    email:'A2'
-  },
-  {
-    username: 'B1',
-    email: 'B2'
-  },
-  {
-    username: 'C1',
-    email: 'C2',
-  },
-  {
-    username: 'D1',
-    email: 'D2',
-  },
-  {
-    username: 'E1',
-    email: 'E2',
-  }
+  {username: 'A1', email: 'A2',},
+  {username: 'B1', email: 'B2',},
+  {username: 'C1', email: 'C2',},
+  {username: 'D1', email: 'D2',},
+  {username: 'E1', email: 'E2',}
 ]
 
 connection.on('error', (err) => err);
 
 connection.once('open', async () => {
   try {
-    await User.deleteMany({});
-    console.log('Users dropped');
+    // // Drop existing collection
+    // await User.deleteMany({});
+    // console.log('Users dropped');
 
-    await User.collection.insertMany(testUsers);
+    // // Seed collection
+    // await User.collection.insertMany(testUsers);
+    // console.log('Users seeded');
+
+    // // populate single collection
+    // await User.findOneAndUpdate(
+    //   { _id: '626ed479018a61ee21a27e06'},
+    //   { $addToSet: { friends: '626ed479018a61ee21a27e07'}},
+    //   { new: true }
+    // );
+    // console.log('friends updated');
   } catch (err) {
     console.log(err);
   };
