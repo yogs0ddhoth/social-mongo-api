@@ -31,30 +31,30 @@ const testUsers = [
   {username: 'E1', email: 'E2',}
 ]
 
-connection.on('error', (err) => err);
+// connection.on('error', (err) => err);
 
-connection.once('open', async () => {
-  try {
-    // // Drop existing collection
-    // await User.deleteMany({});
-    // console.log('Users dropped');
+// connection.once('open', async () => {
+//   try {
+//     // // Drop existing collection
+//     // await User.deleteMany({});
+//     // console.log('Users dropped');
 
-    // // Seed collection
-    // await User.collection.insertMany(testUsers);
-    // console.log('Users seeded');
+//     // // Seed collection
+//     // await User.collection.insertMany(testUsers);
+//     // console.log('Users seeded');
 
-    // // populate single collection
-    // await User.findOneAndUpdate(
-    //   { _id: '626ed479018a61ee21a27e06'},
-    //   { $addToSet: { friends: '626ed479018a61ee21a27e07'}},
-    //   { new: true }
-    // );
-    // console.log('friends updated');
-  } catch (err) {
-    console.log(err);
-  };
-  process.exit(0);
-});
+//     // // populate single collection
+//     // await User.findOneAndUpdate(
+//     //   { _id: '626ed479018a61ee21a27e06'},
+//     //   { $addToSet: { friends: '626ed479018a61ee21a27e07'}},
+//     //   { new: true }
+//     // );
+//     // console.log('friends updated');
+//   } catch (err) {
+//     console.log(err);
+//   };
+//   process.exit(0);
+// });
 
 // 
 userSchema
