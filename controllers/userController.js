@@ -73,5 +73,16 @@ module.exports = { // CRUD Operations:
       console.log(err);
       return res.status(500).json(err);
     }
-  }
+  },
+
+  async deleteUser (req, res) { // get single user by _id
+    try {
+      const user = await User.deleteOne({ _id: ObjectId(req.params.userId)})
+
+      return res.json(user);
+    } catch(err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  },
 };
