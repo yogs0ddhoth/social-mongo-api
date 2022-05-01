@@ -1,9 +1,11 @@
 const { connect, connection } = require('mongoose');
 
-const connecrionString = 
+const connectionString = 
   process.eventNames.MONGODB_URI || 'mongodb://localhost:27017/socialMongoDB';
 
-module.exports = connect(connecrionString, {
+connect(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+
+module.exports = connection;
