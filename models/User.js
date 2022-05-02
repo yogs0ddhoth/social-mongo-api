@@ -1,5 +1,5 @@
-// connection for testing model
-const connection = require('../config/connection');
+// // connection for testing model
+// const connection = require('../config/connection');
 const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema(
@@ -19,6 +19,12 @@ const userSchema = new Schema(
     },
     // thoughts: [{ type: Schema.Types.ObjectId, ref: 'Thought'}],
     friends: [{type: Schema.Types.ObjectId, ref: 'User'}],
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    id: false,
   }
 );
 
@@ -59,7 +65,9 @@ const userSchema = new Schema(
 // 
 userSchema
   .virtual('friendCount').get(function () {
-    return this.friends.length;
+    if (this.friends) {
+      return this.friends.length;
+    } 
   })
 
 const User = model('User', userSchema);
