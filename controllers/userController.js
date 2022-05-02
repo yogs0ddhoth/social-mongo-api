@@ -17,7 +17,7 @@ module.exports = { // CRUD Operations:
   async getUsers (req, res) { // get all users
     try {
       const users = await User.find()
-        // .populate('thoughts')
+        .populate('thoughts', 'thoughtText createdAt')
         .populate('friends', '_id username email');
 
       return res.json(users);
@@ -30,7 +30,7 @@ module.exports = { // CRUD Operations:
   async getUser (req, res) { // get single user by _id
     try {
       const user = await User.findById(req.params.userId)
-        // .populate('thoughts')
+        .populate('thoughts', 'thoughtText createdAt')
         .populate('friends', 'username');
 
       return res.json(user);
@@ -48,7 +48,7 @@ module.exports = { // CRUD Operations:
         { username: req.body.username, email: req.body.email},
         { new: true }
       ).populate('friends', 'username')
-      //  .populate('thoughts')
+       .populate('thoughts', 'thoughtText createdAt')
       ;
 
       return res.json(updatedUser);
@@ -65,7 +65,7 @@ module.exports = { // CRUD Operations:
         { $addToSet: { friends: ObjectId(req.params.friendId)}},
         { new: true }
       ).populate('friends', 'username')
-      //  .populate('thoughts')
+       .populate('thoughts', 'thoughtText createdAt')
       ;
 
       return res.json(updatedUser);
