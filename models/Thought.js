@@ -14,6 +14,10 @@ const thoughtSchema = new Schema(
       default: Date.now(),
       // TODO: make getter
     },
+    user: {
+      type: Schema.Types.ObjectId, 
+      ref: 'User'
+    },
     username: {
       type: String,
       required: true,
