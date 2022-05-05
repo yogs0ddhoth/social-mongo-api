@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const {
-  createUser, getUsers, getUser, updateUser, addFriend, deleteUser
+  createUser, getUsers, getUser, updateUser, deleteUser,
+  addFriend, removeFriend
 } = require('../../controllers/userController'); 
 
 router.route('/') // CREATE single User, READ all Users
@@ -11,6 +12,6 @@ router.route('/:userId') // READ, UPDATE, & DELETE single User by _id
 
 
 router.route('/:userId/friends/:friendId') // UPDATE User.friends by _id
-  .put(addFriend);
+.put(addFriend).delete(removeFriend);
 
 module.exports = router;
