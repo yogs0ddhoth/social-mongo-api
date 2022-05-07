@@ -70,7 +70,7 @@ module.exports = { // 'db.users' CRUD Operations:
         );
       });
       
-      return res.json(deletedUser, deletedThoughts);
+      return res.json({deletedUser, deletedThoughts});
     } catch(err) {
       console.log(err);
       return res.status(500).json(err);
