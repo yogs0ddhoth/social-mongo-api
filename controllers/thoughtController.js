@@ -3,10 +3,12 @@ const { User, Thought } = require('../models');
 
 module.exports = { // 'db.thoughts' CRUD Operations
   // Route: '/'
-  async createThought (req, res) {
-    try {
+  async createThought (req, res) { 
+    // expect -> req.body: {'thoughtText': <string>, 'user': <string>, 'username': <string>}
+    try { // create single thought
       const thought = await Thought.create(req.body);
 
+      // add thought to user as subdoc
       const updatedUser = await User.findOneAndUpdate(
         { _id: thought.user},
         { $addToSet: { thoughts: thought._id}},
@@ -20,10 +22,11 @@ module.exports = { // 'db.thoughts' CRUD Operations
     }
   },
   async getThoughts (req, res) {
-    try {
+    try { // get all thoughts and populate subdocs
       const thoughts = await Thought.find()
         .populate('user', '_id username')
-        .populate('reactions', 'reactionBody username createdAt');
+        .populate('reactions', 'reactionBody username createdAt')
+        .populate('reactions.user', '_id username');
 
       return res.json(thoughts);
     } catch (err) {
@@ -34,9 +37,10 @@ module.exports = { // 'db.thoughts' CRUD Operations
 
   // Route: '/:thoughtId'
   async getThought (req, res) {
-    try {
+    try { // get single thought by _id and populate subdocs 
       const thought = await Thought.findById(req.params.thoughtId)
-        .populate('reactions', 'reactionBody username createdAt');
+        .populate('reactions', 'reactionBody username createdAt')
+        .populate('reactions.user', '_id username');
 
       return res.json(thought);
     } catch (err) {
@@ -45,7 +49,8 @@ module.exports = { // 'db.thoughts' CRUD Operations
     }
   },
   async updateThought (req, res) { // Expect -> req.body: {'thoughText': <string>}
-    try { // get thought by id and update
+    try { // get thought by _id and update thoughtText
+          // return updated document with populated subdocs
       const updatedThought = await Thought.findOneAndUpdate(
         { _id: ObjectId(req.params.thoughtId) },
         { thoughtText: req.body.thoughtText },
@@ -59,9 +64,10 @@ module.exports = { // 'db.thoughts' CRUD Operations
     }
   },
   async deleteThought (req, res) { 
-    try {
+    try { // delete single thought by _id
       const deletedThought = await Thought.findOneAndDelete({ _id: ObjectId(req.params.thoughtId) });
-      console.log(deletedThought.user);
+      
+      // remove associated subdoc from associated user
       const userThoughts = await User.findByIdAndUpdate(
         { _id: deletedThought.user },
         { $pull: { thoughts: ObjectId(req.params.thoughtId) } },
@@ -76,16 +82,33 @@ module.exports = { // 'db.thoughts' CRUD Operations
   },
 
   // Route: '/:thoughtId/reactions'
-  async addReaction (req, res) {}, 
+  async addReaction (req, res) {
+    try { // get single thought by _id and create subdoc in 'reactions' field
+          // return updated thought with subdocs populated
+      const updatedThought = await Thought.findOneAndUpdate(
+        { _id: ObjectId(req.params.thoughtId)},
+        { $addToSet: { reactions: req.body } },
+        { new: true }
+      ).populate('reactions', 'user');
 
-  async deleteReaction (req, res) {
-    try {
-      const deletedThought = await Thought.deleteOne({ _id: ObjectId(req.params.userId)})
-
-      return res.json(deletedThought);
+      return res.json(updatedThought);
     } catch(err) {
       console.log(err);
       return res.status(500).json(err);
     }
-  },
+  }, 
+  async deleteReaction (req, res) {
+    try { // remove reaction from associated parent doc
+      const updatedThought = await Thought.findOneAndUpdate(
+        { _id: ObjectId(req.params.thoughtId)},
+        { $pull: { reactions: {user: ObjectId(req.body.user)} } },
+        { new: true }
+      );
+
+      return res.json(updatedThought);
+    } catch(err) {
+      console.log(err);
+      return res.status(500).json(err);
+    }
+  }
 };
