@@ -1,10 +1,11 @@
 const { ObjectId } = require('mongoose').Types;
 const { User, Thought } = require('../models');
 
-module.exports = { // CRUD Operations:
+module.exports = { // 'db.users' CRUD Operations:
   // Route: '/'
-  async createUser (req, res) { // Expect -> req.body: {'username': <string>, 'email': <string>}
-    try { // create single User
+  async createUser (req, res) { 
+    // expect -> req.body: {'username': <string>, 'email': <string>}
+    try { // create single user
       const user = await User.create(req.body);
 
       return res.json(user);
@@ -26,7 +27,7 @@ module.exports = { // CRUD Operations:
   
   // Route: '/:userId'
   async getUser (req, res) { 
-    try { // get single user and subdocuments by _id
+    try { // get single user by _id and populate subdocs
       const user = await User.findById(req.params.userId)
         .populate('thoughts', 'thoughtText createdAt')
         .populate('friends', 'username');
@@ -37,7 +38,8 @@ module.exports = { // CRUD Operations:
       return res.status(500).json(err);
     }
   },
-  async updateUser (req, res) { // Expect -> req.body: {'username': <string>, 'email': <string>}
+  async updateUser (req, res) { 
+    // expect -> req.body: {'username': <string>, 'email': <string>}
     try { // add user to user.friends by _id
       const updatedUser = await User.findOneAndUpdate(
         { _id: ObjectId(req.params.userId) },
@@ -58,7 +60,7 @@ module.exports = { // CRUD Operations:
       // delete all associated thoughts
       const deletedThoughts = await Thought.deleteMany({ user: ObjectId(req.params.userId) });
 
-      // delete all instances of user in other users' 'friend' fields
+      // delete all instances of user in other users' 'friends' fields
       const userFriends = await User.find({ friends: ObjectId(req.params.userId) }, '_id');
       userFriends.forEach( async (user) => {
         await User.findByIdAndUpdate(
@@ -68,7 +70,7 @@ module.exports = { // CRUD Operations:
         );
       });
       
-      return res.json('Deleted');
+      return res.json(deletedUser, deletedThoughts);
     } catch(err) {
       console.log(err);
       return res.status(500).json(err);
@@ -96,7 +98,7 @@ module.exports = { // CRUD Operations:
         { _id: ObjectId(req.params.userId) },
         { $pull: { friends: ObjectId(req.params.friendId) } },
         { new: true }
-      ).populate('friends', 'username');
+      );
 
       return res.json(updatedUser);
     } catch (err) {
