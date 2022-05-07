@@ -55,7 +55,8 @@ module.exports = { // 'db.thoughts' CRUD Operations
         { _id: ObjectId(req.params.thoughtId) },
         { thoughtText: req.body.thoughtText },
         { new: true }
-      ).populate('reactions', 'reactionBody username createdAt');
+      ).populate('reactions', 'reactionBody username createdAt')
+       .populate('reactions.user', '_id username');
 
       return res.json(updatedThought);
     } catch (err) {
@@ -68,13 +69,13 @@ module.exports = { // 'db.thoughts' CRUD Operations
       const deletedThought = await Thought.findOneAndDelete({ _id: ObjectId(req.params.thoughtId) });
       
       // remove associated subdoc from associated user
-      const userThoughts = await User.findByIdAndUpdate(
+      const updatedUser = await User.findByIdAndUpdate(
         { _id: deletedThought.user },
         { $pull: { thoughts: ObjectId(req.params.thoughtId) } },
         { new: true }
       );
 
-      return res.json(userThoughts);
+      return res.json({deletedThought, updatedUser});
     } catch(err) {
       console.log(err);
       return res.status(500).json(err);
